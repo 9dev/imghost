@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+	{% if image.title %}
+		{{ image.title }}
+	{% else %}
+		Image - Imghost
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="text-center">
+	{% if image.title %}
+		<h1>{{ image.title }}</h1>
+	{% endif %}
+	<p class="text-center"><img class="img-responsive text-center" src="{{image.image.url}}" alt="{{ image.title }}"/></p>
+
+	{% if user.is_authenticated %}
+		{% if image.user == user or user.is_staff %}
+		    <p><a href="{% url 'main:image_delete' image.id %}">
+		    	<button type="button" class="btn btn-danger">Delete this image</button>
+		    </a></p>
+		{% endif %}
+	{% endif %}
+
+	<div class="panel panel-info">
+		<div class="panel-heading">
+	    	<h3 class="panel-title">Info</h3>
+		</div>
+		<div class="panel-body text-left">
+			<b>Tags:</b> 
+			{% for tag in image.tags.all %}
+				<a href="{% url 'main:tag' tag %}" class="label label-primary">{{ tag }}</a>
+			{% endfor %}<br>
+			<b>Description:</b> {{ image.description }}<br>
+			<b>Uploader:</b>
+			{% if image.user %}
+				<a href="{% url 'main:user' image.user %}">{{ image.user }}</a>
+			{% else %}
+				Guest
+			{% endif %}<br>
+			<b>Date added:</b> {{ image.created }}<br>
+			<b>Nsfw:</b> {{ image.nsfw }}<br>
+			
+			{% load agon_ratings_tags %}
+			{% overall_rating image as the_overall_rating %}
+			
+			<b>Score:</b> <span class="rating">{{ the_overall_rating }}</span><br>
+			<b>Your vote:</b>
+			{% if user.is_authenticated %}
+				<div id="user_rating"></div>
+			{% else %}
+				You need to be logged in to rate images
+			{% endif %}
+			<br>
+			<b>Embed code: </b><input type="text" readonly="readonly" value="{{ embed|escape }}" class="form-control">
+		</div>
+	</div>
+
+	{% load dialogos_tags %}
+
+	<h1>Comments ({% comment_count image %})</h1>
+
+	<div class="text-left">
+	{% comments image as comments %}
+	{% for comment in comments %}
+		<div class="panel panel-default">
+		 	<div class="panel-body">
+		    	{{ comment.comment }}
+		  	</div>
+		  	<div class="panel-footer">Author:
+		  		{% if comment.author %}
+					<a href="{% url 'main:user' comment.author %}">{{ comment.author }}</a>
+				{% else %}
+					Guest
+				{% endif %}
+		  	</div>
+		</div>
+	{% endfor %}
+	</div>
+	
+	<h2>Add comment</h2>
+
+	{% comment_form image as comment_form %}
+	<form method="post" action="{% comment_target image %}">
+		{% csrf_token %}
+		{{ comment_form|crispy }}
+		<p><input type="submit" class="btn btn-danger" value="Add comment" /></p>
+	</form>
+
+</div>
+{% endblock %}
+
+{% block extra_body %}
+	{% if user.is_authenticated %}
+		{% user_rating_js user image %}
+	{% endif %}
+{% endblock %}

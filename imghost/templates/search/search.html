@@ -1,0 +1,53 @@
+{% extends "main/image_list.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}Search{% endblock %}
+
+{% block extra_head %}{% endblock %}
+
+{% block info %}
+	<div class="well">
+		<form method="GET" action="{% url 'haystack_search' %}">
+			{{ form|crispy }}
+			<button class="btn btn-primary" type="submit">Search</button>
+		</form>
+	</div>
+{% endblock %}
+
+{% block list %}
+	<div class="text-center">
+		{% if query %}
+			<h2>Results</h2>
+			
+			{% if page.object_list %}
+			
+				<div class="container">
+	            {% for result in page.object_list %}
+	            	{% with image=result.object %}
+		            	{% block image %}
+		            		{{ block.super }}
+		            	{% endblock %}
+	            	{% endwith %}	                
+	            {% endfor %}
+	        	</div>
+	        	
+	        	{% with is_paginated=page.has_other_pages %}
+		        	
+		        	{% if page.has_previous or page.has_next %}
+		                <div class="well pagination">
+		                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+		                    |
+		                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+		                </div>
+		            {% endif %}
+		            
+	            {% endwith %}
+	            
+	        {% else %}
+	        	<p>No results found</p>
+	        {% endif %}
+        
+    	{% endif %} 
+	</div>
+{% endblock %}

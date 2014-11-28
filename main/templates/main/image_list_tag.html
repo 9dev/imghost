@@ -1,0 +1,29 @@
+{% extends "main/image_list.html" %}
+
+{% block extra_head %}
+	<link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'main:tag_feed' tag_info.name %}" />
+{% endblock %}
+
+{% block info %}
+	<div class="well">
+		Images tagged with <b>"{{ tag_info.name }}"</b> (<a href="{% url 'main:tag_feed' tag_info.name %}">get RSS</a>)
+	</div>
+{% endblock %}
+
+{% block pagination %}
+	    {% if is_paginated %}
+	        <div class="well pagination">
+	                {% if page_obj.has_previous %}
+	                    <a href="{% url 'main:tag_page' tag_info.name page_obj.previous_page_number %}">Previous &laquo;</a>
+	                {% endif %}
+	                
+	                {% if page_obj.has_previous and page_obj.has_next %}
+	                    |
+	                {% endif %}
+	                
+	                {% if page_obj.has_next %}
+	                    <a href="{% url 'main:tag_page' tag_info.name page_obj.next_page_number %}">Next &raquo;</a>
+	                {% endif %}
+	        </div>
+	    {% endif %}
+{% endblock %}

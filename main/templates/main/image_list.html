@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block head_title %}Browse images{% endblock %}
+
+{% block extra_head %}
+	<link rel="alternate" type="application/rss+xml" title="RSS" href="{% url 'main:index_feed' %}" />
+{% endblock %}
+
+{% block content %}
+
+{% block info %}{% endblock %}
+
+{% block list %}
+<div class="text-center">
+{% if image_list %}
+	<div class="container">
+    {% for image in image_list %}
+    	{% block image %}
+		<a href="{% url 'main:image' image.id %}" class="thumbnail">
+    		<img class="img-responsive" src="{{ image.image.url }}" alt="{{ image.title }}" style="max-width:600px"/>
+		</a>
+		{% endblock %}
+    {% endfor %}
+  	</div>
+    
+    {% block pagination %}
+	    {% if is_paginated %}
+	        <div class="well pagination">
+	                {% if page_obj.has_previous %}
+	                    <a href="{% url 'main:index_page' page_obj.previous_page_number %}">Previous &laquo;</a>
+	                {% endif %}
+	                
+	                {% if page_obj.has_previous and page_obj.has_next %}
+	                    |
+	                {% endif %}
+	                
+	                {% if page_obj.has_next %}
+	                    <a href="{% url 'main:index_page' page_obj.next_page_number %}">Next &raquo;</a>
+	                {% endif %}
+	        </div>
+	    {% endif %}
+    {% endblock %}
+    
+{% else %}
+    <p>{% block empty_message %}No images are available.{% endblock %}</p>
+{% endif %}
+</div>
+{% endblock %}
+
+{% endblock %}

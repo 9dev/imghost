@@ -1,0 +1,3 @@
+img{display: block; margin: 0 auto}
+.rating{color:red;font-weight:bold}
+#user_rating img {float:left}
