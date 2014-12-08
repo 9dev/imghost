@@ -2,6 +2,23 @@
 
 Imghost is a Django project created for educational purposes.
 
+## Main features
+
+* Image Hosting
+* Bootstrapped Templates
+* Comments
+* Votes
+* Tags
+* Watermark
+* Thumbnails
+* Ratelimiting
+* CAPTCHA
+* Search Engine
+* Automation (by using cron)
+* Cache
+* RSS Feeds
+* Sitemap
+* OEmbed (images can be embedded on 3rd party websites)
 
 ## Installation
 
